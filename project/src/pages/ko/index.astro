@@ -1,0 +1,356 @@
+---
+import { 
+  type GuideItem, 
+  type Language, 
+  getLocalizedText, 
+  t 
+} from '../../utils/language';
+import { fetchGuideData } from '../../utils/dataFetcher';
+import LanguageSelector from '../../components/LanguageSelector.astro';
+
+const currentLanguage: Language = 'ko';
+
+let guideItems: GuideItem[] = [];
+let error = '';
+
+try {
+  guideItems = await fetchGuideData() as GuideItem[];
+  console.log('Guide items loaded:', guideItems);
+} catch (e) {
+  error = `데이터 가져오기 실패. 네트워크 연결을 확인해주세요.: ${e instanceof Error ? e.message : '알 수 없는 오류'}`;
+  console.error('Fetch error:', e);
+}
+
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+  <main class="top-page">
+    <!-- Language Selector -->
+    <div class="language-selector-container">
+      <LanguageSelector currentLanguage={currentLanguage} currentPath="/ko/" />
+    </div>
+
+    <!-- ヘッダーセクション -->
+    <header class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">🏖️ {t('siteTitle', currentLanguage)}</h1>
+        <p class="hero-subtitle">{t('siteSubtitle', currentLanguage)}</p>
+        <div class="hero-description">
+          <p>{t('siteDescription', currentLanguage)}</p>
+        </div>
+      </div>
+      <div class="hero-wave"></div>
+    </header>
+
+    <!-- コンテンツセクション -->
+    <section class="content-section">
+      {error && guideItems.length === 0 ? (
+        <div class="error-container">
+          <div class="error-card">
+            <h2>🏖️ {t('dataLoading', currentLanguage)}</h2>
+            <p>{error}</p>
+            <p class="error-note">{t('loadingNote', currentLanguage)}</p>
+          </div>
+        </div>
+      ) : guideItems.length > 0 ? (
+        <div class="guides-container">
+          <h2 class="section-title">{t('recommendedSpots', currentLanguage)}</h2>
+          <div class="guides-grid">
+            {guideItems.map((item) => (
+              <article class="guide-card">
+                <a href={`/ko/guide/${item.item_id}/`} class="guide-link">
+                  {item.main_image_url && (
+                    <div class="guide-image-container">
+                      <img 
+                        src={item.main_image_url} 
+                        alt={getLocalizedText(item, 'name_ja', currentLanguage)}
+                        class="guide-image"
+                        loading="lazy"
+                        onerror="this.style.display='none'"
+                      />
+                      <div class="guide-overlay">
+                        <span class="view-detail">{t('viewDetail', currentLanguage)}</span>
+                      </div>
+                    </div>
+                  )}
+                  <div class="guide-content">
+                    <h3 class="guide-title">{getLocalizedText(item, 'name_ja', currentLanguage)}</h3>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>{t('loadingSpinner', currentLanguage)}</p>
+        </div>
+      )}
+    </section>
+  </main>
+</Layout>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  .language-selector-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+  }
+  .top-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #4dd0e1 100%);
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, #26c6da 0%, #4dd0e1 50%, #80deea 100%);
+    color: white;
+    padding: 4rem 2rem 6rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin: 0 0 2rem 0;
+    opacity: 0.95;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,50 Q300,10 600,50 T1200,50 L1200,120 L0,120 Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center bottom;
+    background-size: cover;
+  }
+
+  .content-section {
+    background: white;
+    min-height: 60vh;
+    padding: 3rem 2rem;
+  }
+
+  .error-container, .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .error-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 188, 212, 0.15);
+    text-align: center;
+    max-width: 500px;
+  }
+
+  .error-card h2 {
+    color: #00838f;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .error-note {
+    color: #4dd0e1;
+    font-style: italic;
+    margin-top: 1rem;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e0f7fa;
+    border-left: 4px solid #00bcd4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .guides-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    color: #006064;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 3rem 0;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #4dd0e1, #00bcd4);
+    border-radius: 2px;
+  }
+
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .guide-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(77, 208, 225, 0.1);
+  }
+
+  .guide-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 188, 212, 0.2);
+  }
+
+  .guide-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+
+  .guide-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+  }
+
+  .guide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .guide-card:hover .guide-image {
+    transform: scale(1.05);
+  }
+
+  .guide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 188, 212, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .guide-card:hover .guide-overlay {
+    opacity: 1;
+  }
+
+  .view-detail {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid white;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+  }
+
+  .guide-overlay:hover .view-detail {
+    background: white;
+    color: #00bcd4;
+  }
+
+  .guide-content {
+    padding: 2rem;
+  }
+
+  .guide-title {
+    color: #006064;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 3rem 1rem 4rem;
+    }
+
+    .content-section {
+      padding: 2rem 1rem;
+    }
+
+    .guides-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .guide-content {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .guides-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .guide-card {
+      margin: 0;
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import { getLanguageFromPath } from '../utils/language';
+
+const currentLanguage = getLanguageFromPath(Astro.url.pathname);
+---
+
+<!doctype html>
+<html lang={currentLanguage}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content="沖縄の美しい景色と文化を紹介するガイドブック / 介紹沖繩美麗風景與文化的旅遊指南" />
+		<title>沖縄ガイドブック / 沖繩旅遊指南 | 美ら島の魅力発見 / 發現美麗島嶼的魅力</title>
+		
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html {
+		font-family: 'Noto Sans JP', system-ui, sans-serif;
+		line-height: 1.6;
+	}
+	
+	body {
+		margin: 0;
+		padding: 0;
+		min-height: 100vh;
+		background: #f5f5f5;
+		color: #333;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+</style>
