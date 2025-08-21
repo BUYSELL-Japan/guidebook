@@ -34,9 +34,10 @@ const accessText = '교통';
 const viewOtherSpotsText = '다른 명소 보기';
 
 // Pre-process description paragraphs
-const descriptionParagraphs = (getLocalizedText(guideData, 'description_ja', currentLanguage) || '')
+const descriptionParagraphs = (getLocalizedText(guideData, 'description_ko', currentLanguage) || '')
   .split('\n')
   .filter(paragraph => paragraph.trim());
+
 ---
 
 <Layout>
