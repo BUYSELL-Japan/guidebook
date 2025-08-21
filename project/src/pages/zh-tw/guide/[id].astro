@@ -17,24 +17,21 @@ export async function getStaticPaths() {
 }
 
 import { 
-  type GuideItem as GuideData, 
-  type Language, 
-  getLocalizedText, 
-  t
+  getLocalizedText
 } from '../../../utils/language';
 import LanguageSelector from '../../../components/LanguageSelector.astro';
 import Layout from '../../../layouts/Layout.astro';
 
-const currentLanguage: Language = 'zh-tw';
-const { guideData }: { guideData: GuideData } = Astro.props;
+const currentLanguage = 'zh-tw';
+const { guideData } = Astro.props;
 
 // Pre-compute localized strings to avoid parsing issues
-const homeText = t('home', currentLanguage);
-const overviewText = t('overview', currentLanguage);
-const detailInfoText = t('detailInfo', currentLanguage);
-const highlightsText = t('highlights', currentLanguage);
-const accessText = t('access', currentLanguage);
-const viewOtherSpotsText = t('viewOtherSpots', currentLanguage);
+const homeText = '首頁';
+const overviewText = '概要';
+const detailInfoText = '詳細資訊';
+const highlightsText = '亮點';
+const accessText = '交通';
+const viewOtherSpotsText = '查看其他景點';
 
 // Pre-process description paragraphs
 const descriptionParagraphs = (getLocalizedText(guideData, 'description_ja', currentLanguage) || '')
@@ -45,9 +42,7 @@ const descriptionParagraphs = (getLocalizedText(guideData, 'description_ja', cur
 <Layout>
   <main class="guide-container">
     <!-- Language Selector -->
-    <div class="language-selector-container">
-      <LanguageSelector currentLanguage={currentLanguage} currentPath={`/zh-tw/guide/${guideData.item_id}/`} />
-    </div>
+    <div class="language-selector-container"></div>
 
     <article class="guide-article">
       <!-- ナビゲーション -->
