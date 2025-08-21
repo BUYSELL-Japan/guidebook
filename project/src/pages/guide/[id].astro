@@ -35,8 +35,9 @@ const viewOtherSpotsText = '他のスポットを見る';
 
 // Pre-process description paragraphs
 const descriptionParagraphs = (getLocalizedText(guideData, 'description_ja', currentLanguage) || '')
-  .split('\n')
-  .filter(paragraph => paragraph.trim());
+ .split('\n')
+ .filter(paragraph => paragraph.trim());
+
 ---
 
 <Layout>
