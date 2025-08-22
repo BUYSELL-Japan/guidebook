@@ -17,7 +17,8 @@ export async function getStaticPaths() {
 }
 
 import { 
-  getLocalizedText
+  getLocalizedText, 
+  defaultLanguage
 } from '../../../utils/language';
 import LanguageSelector from '../../../components/LanguageSelector.astro';
 import Layout from '../../../layouts/Layout.astro';
@@ -25,7 +26,6 @@ import Layout from '../../../layouts/Layout.astro';
 const currentLanguage = 'zh-tw';
 const { guideData } = Astro.props;
 
-// Pre-compute localized strings to avoid parsing issues
 const homeText = '首頁';
 const overviewText = '概要';
 const detailInfoText = '詳細資訊';
@@ -34,41 +34,41 @@ const accessText = '交通';
 const viewOtherSpotsText = '查看其他景點';
 
 // Pre-process description paragraphs
-const descriptionParagraphs = (getLocalizedText(guideData, 'description_ko', currentLanguage) || '')
-  .split('\n')
-  .filter(paragraph => paragraph.trim());
-
+const descriptionText = getLocalizedText(guideData, 'description_zh_tw', currentLanguage) || '';
+const descriptionParagraphs = descriptionText.split('\n').filter(paragraph => paragraph.trim());
 ---
 
 <Layout>
   <main class="guide-container">
     <!-- Language Selector -->
-    <div class="language-selector-container"></div>
+    <div class="language-selector-container">
+      <LanguageSelector currentLanguage={currentLanguage} currentPath={"/guide/" + guideData.item_id + "/"} />
+    </div>
 
     <article class="guide-article">
-      <!-- ナビゲーション -->
+      <!-- Navigation -->
       <nav class="breadcrumb">
         <a href="/zh-tw/" class="breadcrumb-link">🏠 {homeText}</a>
         <span class="breadcrumb-separator">›</span>
-        <span class="breadcrumb-current">{getLocalizedText(guideData, 'name_ja', currentLanguage)}</span>
+        <span class="breadcrumb-current">{getLocalizedText(guideData, 'name_zh_tw', currentLanguage)}</span>
       </nav>
 
-      <!-- ヘッダーセクション -->
+      <!-- Header Section -->
       <header class="guide-header">
         <div class="header-content">
-          <h1 class="main-title">{getLocalizedText(guideData, 'name_ja', currentLanguage)}</h1>
-          <p class="catchy-comment">{getLocalizedText(guideData, 'catchy_comment_ja', currentLanguage)}</p>
+          <h1 class="main-title">{getLocalizedText(guideData, 'name_zh_tw', currentLanguage)}</h1>
+          <p class="catchy-comment">{getLocalizedText(guideData, 'catchy_comment_zh_tw', currentLanguage)}</p>
         </div>
         <div class="header-wave"></div>
       </header>
 
-      <!-- メイン画像セクション -->
+      <!-- Main Image Section -->
       {guideData.main_image_url && (
         <section class="main-image-section">
           <div class="image-container">
             <img 
               src={guideData.main_image_url} 
-              alt={getLocalizedText(guideData, 'name_ja', currentLanguage)}
+              alt={getLocalizedText(guideData, 'name_zh_tw', currentLanguage)}
               class="main-image"
               onerror="this.parentElement.parentElement.style.display='none'"
             />
@@ -76,68 +76,70 @@ const descriptionParagraphs = (getLocalizedText(guideData, 'description_ko', cur
         </section>
       )}
 
-      <!-- コンテンツセクション -->
+      <!-- Content Section -->
       <div class="content-wrapper">
-        <!-- サマリーセクション -->
+        <!-- Summary Section -->
         <section class="summary-section">
           <div class="content-card">
             <h2 class="section-title">{overviewText}</h2>
-            <p class="summary-text">{getLocalizedText(guideData, 'summary_ja', currentLanguage)}</p>
+            <p class="summary-text">{getLocalizedText(guideData, 'summary_zh_tw', currentLanguage)}</p>
           </div>
         </section>
 
-        <!-- 詳細説明セクション -->
+        <!-- Detailed Description Section -->
         <section class="description-section">
           <div class="content-card">
             <h2 class="section-title">{detailInfoText}</h2>
             <div class="description-content">
-              {descriptionParagraphs.map(paragraph => <p>{paragraph}</p>)}
+              {descriptionParagraphs.map((paragraph) => (
+                <p class="description-paragraph">{paragraph}</p>
+              ))}
             </div>
           </div>
         </section>
 
-        <!-- ハイライトセクション -->
+        <!-- Highlights Section -->
         <section class="highlights-section">
           <h2 class="section-title highlights-title">{highlightsText}</h2>
           
           <div class="highlight-grid">
-            <!-- ハイライト1 -->
-            {(guideData.highlight_1_image_url || getLocalizedText(guideData, 'highlight_1_text_ja', currentLanguage)) && (
+            <!-- Highlight 1 -->
+            {(guideData.highlight_1_image_url || getLocalizedText(guideData, 'highlight_1_text_zh_tw', currentLanguage)) && (
               <div class="highlight-item">
                 {guideData.highlight_1_image_url && (
                   <div class="highlight-image-container">
                     <img 
                       src={guideData.highlight_1_image_url} 
-                      alt="亮點1"
+                      alt="Highlight 1"
                       class="highlight-image"
                       onerror="this.parentElement.style.display='none'"
                     />
                   </div>
                 )}
-                {getLocalizedText(guideData, 'highlight_1_text_ja', currentLanguage) && (
+                {getLocalizedText(guideData, 'highlight_1_text_zh_tw', currentLanguage) && (
                   <div class="highlight-content">
-                    <p class="highlight-text">{getLocalizedText(guideData, 'highlight_1_text_ja', currentLanguage)}</p>
+                    <p class="highlight-text">{getLocalizedText(guideData, 'highlight_1_text_zh_tw', currentLanguage)}</p>
                   </div>
                 )}
               </div>
             )}
 
-            <!-- ハイライト2 -->
-            {(guideData.highlight_2_image_url || getLocalizedText(guideData, 'highlight_2_text_ja', currentLanguage)) && (
+            <!-- Highlight 2 -->
+            {(guideData.highlight_2_image_url || getLocalizedText(guideData, 'highlight_2_text_zh_tw', currentLanguage)) && (
               <div class="highlight-item">
                 {guideData.highlight_2_image_url && (
                   <div class="highlight-image-container">
                     <img 
                       src={guideData.highlight_2_image_url} 
-                      alt="亮點2"
+                      alt="Highlight 2"
                       class="highlight-image"
                       onerror="this.parentElement.style.display='none'"
                     />
                   </div>
                 )}
-                {getLocalizedText(guideData, 'highlight_2_text_ja', currentLanguage) && (
+                {getLocalizedText(guideData, 'highlight_2_text_zh_tw', currentLanguage) && (
                   <div class="highlight-content">
-                    <p class="highlight-text">{getLocalizedText(guideData, 'highlight_2_text_ja', currentLanguage)}</p>
+                    <p class="highlight-text">{getLocalizedText(guideData, 'highlight_2_text_zh_tw', currentLanguage)}</p>
                   </div>
                 )}
               </div>
@@ -145,19 +147,22 @@ const descriptionParagraphs = (getLocalizedText(guideData, 'description_ko', cur
           </div>
         </section>
 
-        <!-- アクセス情報セクション -->
+        <!-- Access Information Section -->
         <section class="address-section">
           <div class="content-card address-card">
             <h2 class="section-title">📍 {accessText}</h2>
-            <p class="address-text">{getLocalizedText(guideData, 'address_ja', currentLanguage)}</p>
+            <p class="address-text">{getLocalizedText(guideData, 'address_zh_tw', currentLanguage)}</p>
           </div>
         </section>
 
-        <!-- ナビゲーションセクション -->
+        <!-- Navigation Section -->
         <section class="navigation-section">
           <div class="nav-card">
             <a href="/zh-tw/" class="back-button">
-              ← {viewOtherSpotsText}
+              <svg class="back-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              {viewOtherSpotsText}
             </a>
           </div>
         </section>
@@ -167,340 +172,288 @@ const descriptionParagraphs = (getLocalizedText(guideData, 'description_ko', cur
 </Layout>
 
 <style>
-  :global(html) {
-    scroll-behavior: smooth;
-  }
+.guide-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 2rem;
+}
 
-  .language-selector-container {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1000;
-  }
+.language-selector-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.guide-article {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.breadcrumb-link {
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+  color: #764ba2;
+}
+
+.breadcrumb-separator {
+  color: #ccc;
+}
+
+.breadcrumb-current {
+  color: #333;
+  font-weight: 500;
+}
+
+.guide-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.catchy-comment {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+.header-wave {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23f8f9fa'/%3E%3C/svg%3E") repeat-x;
+  background-size: 1200px 40px;
+}
+
+.main-image-section {
+  margin-bottom: 3rem;
+}
+
+.image-container {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.main-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.content-card {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 15px;
+  border-left: 4px solid #667eea;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin: 0;
+}
+
+.description-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.description-paragraph {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #555;
+  margin: 0;
+}
+
+.highlights-section {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  padding: 2rem;
+  border-radius: 15px;
+  color: white;
+}
+
+.highlights-title {
+  color: white;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.highlight-item {
+  background: rgba(255,255,255,0.1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.highlight-image-container {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.highlight-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.highlight-content {
+  color: white;
+}
+
+.highlight-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.address-card {
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  color: white;
+  border-left: none;
+}
+
+.address-card .section-title {
+  color: white;
+}
+
+.address-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin: 0;
+  color: white;
+}
+
+.navigation-section {
+  text-align: center;
+}
+
+.nav-card {
+  display: inline-block;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.back-icon {
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover .back-icon {
+  transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
   .guide-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #4dd0e1 100%);
+    padding: 1rem;
   }
-
+  
   .guide-article {
-    max-width: 1200px;
-    margin: 0 auto;
+    margin-top: 1rem;
+    padding: 1.5rem;
   }
-
-  .breadcrumb {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    backdrop-filter: blur(10px);
-  }
-
-  .breadcrumb-link {
-    color: #00838f;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .breadcrumb-link:hover {
-    color: #4dd0e1;
-  }
-
-  .breadcrumb-separator {
-    margin: 0 0.8rem;
-    color: #666;
-  }
-
-  .breadcrumb-current {
-    color: #424242;
-    font-weight: 500;
-  }
-
-  .guide-header {
-    background: linear-gradient(135deg, #26c6da 0%, #4dd0e1 50%, #80deea 100%);
-    color: white;
-    padding: 4rem 2rem 6rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .header-content {
-    position: relative;
-    z-index: 2;
-  }
-
+  
   .main-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    margin: 0 0 1rem 0;
-    letter-spacing: 0.02em;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    font-size: 2rem;
   }
-
-  .catchy-comment {
-    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-    margin: 0;
-    opacity: 0.95;
-    font-weight: 300;
-    letter-spacing: 0.05em;
-  }
-
-  .header-wave {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,50 Q300,10 600,50 T1200,50 L1200,120 L0,120 Z' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center bottom;
-    background-size: cover;
-  }
-
-  .main-image-section {
-    padding: 2rem;
-    background: white;
-  }
-
-  .image-container {
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
-  }
-
-  .image-container:hover {
-    transform: translateY(-5px);
-  }
-
+  
   .main-image {
-    width: 100%;
-    height: auto;
-    max-height: 500px;
-    object-fit: cover;
-    display: block;
-  }
-
-  .content-wrapper {
-    background: white;
-    padding: 2rem;
-  }
-
-  .content-card {
-    background: white;
-    border-radius: 15px;
-    padding: 2.5rem;
-    margin: 2rem auto;
-    max-width: 800px;
-    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.1);
-    border-left: 5px solid #4dd0e1;
-  }
-
-  .section-title {
-    color: #006064;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 0 0 1.5rem 0;
-    position: relative;
-    display: inline-block;
-  }
-
-  .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #4dd0e1, #00bcd4);
-    border-radius: 2px;
-  }
-
-  .summary-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #424242;
-    margin: 0;
-  }
-
-  .description-content {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: #424242;
-  }
-
-  .description-content p {
-    margin: 0 0 1.2rem 0;
-  }
-
-  .description-content p:last-child {
-    margin-bottom: 0;
-  }
-
-  .highlights-section {
-    max-width: 1000px;
-    margin: 3rem auto;
-    padding: 0 2rem;
-  }
-
-  .highlights-title {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-bottom: 3rem;
-  }
-
-  .highlight-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 3rem;
-    margin-top: 2rem;
-  }
-
-  .highlight-item {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 188, 212, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .highlight-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 50px rgba(0, 188, 212, 0.2);
-  }
-
-  .highlight-image-container {
     height: 250px;
-    overflow: hidden;
   }
-
-  .highlight-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+  
+  .content-card {
+    padding: 1.5rem;
   }
-
-  .highlight-item:hover .highlight-image {
-    transform: scale(1.05);
+  
+  .highlight-grid {
+    grid-template-columns: 1fr;
   }
-
-  .highlight-content {
-    padding: 2rem;
+  
+  .language-selector-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 1rem;
+    text-align: right;
   }
-
-  .highlight-text {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: #424242;
-    margin: 0;
-  }
-
-  .address-section {
-    max-width: 800px;
-    margin: 3rem auto;
-  }
-
-  .address-card {
-    background: linear-gradient(135deg, #e0f7fa, #f3e5f5);
-    border-left: 5px solid #ff7043;
-  }
-
-  .address-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #424242;
-    margin: 0;
-    font-weight: 500;
-  }
-
-  .navigation-section {
-    max-width: 800px;
-    margin: 3rem auto;
-    text-align: center;
-  }
-
-  .nav-card {
-    background: white;
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.1);
-  }
-
-  .back-button {
-    display: inline-block;
-    background: linear-gradient(135deg, #4dd0e1, #00bcd4);
-    color: white;
-    text-decoration: none;
-    padding: 1rem 2rem;
-    border-radius: 25px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(77, 208, 225, 0.3);
-  }
-
-  .back-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(77, 208, 225, 0.4);
-    background: linear-gradient(135deg, #00bcd4, #0097a7);
-  }
-
-  @media (max-width: 768px) {
-    .breadcrumb {
-      padding: 1rem;
-      font-size: 0.8rem;
-    }
-
-    .guide-header {
-      padding: 3rem 1rem 4rem;
-    }
-
-    .main-image-section {
-      padding: 1rem;
-    }
-
-    .content-wrapper {
-      padding: 1rem;
-    }
-
-    .content-card {
-      padding: 2rem 1.5rem;
-      margin: 1.5rem auto;
-    }
-
-    .highlight-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .highlight-item {
-      margin: 0;
-    }
-
-    .highlights-section {
-      padding: 0 1rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .highlight-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .highlight-item {
-      min-width: unset;
-    }
-
-    .breadcrumb {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .breadcrumb-separator {
-      display: none;
-    }
-  }
+}
 </style>
