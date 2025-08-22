@@ -34,8 +34,10 @@ const accessText = '交通';
 const viewOtherSpotsText = '查看其他景點';
 
 // Pre-process description paragraphs
-const descriptionText = getLocalizedText(guideData, 'description_zh_tw', currentLanguage) || '';
-const descriptionParagraphs = descriptionText.split('\n').filter(paragraph => paragraph.trim());
+const descriptionParagraphs = (getLocalizedText(guideData, 'description_zh_tw', currentLanguage) || '')
+  .split('\n')
+  .filter(paragraph => paragraph.trim());
+
 ---
 
 <Layout>
