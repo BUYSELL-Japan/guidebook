@@ -1,7 +1,7 @@
 ---
+import { fetchGuideData } from '../../../utils/dataFetcher';
+
 export async function getStaticPaths() {
-  const { fetchGuideData } = await import('../../../utils/dataFetcher');
-  
   try {
     const guideItems = await fetchGuideData();
     

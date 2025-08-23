@@ -1,6 +1,6 @@
 // Utility for fetching data with retry logic and error handling
 export async function fetchWithRetry(url: string, maxRetries: number = 3, delay: number = 1000): Promise<any> {
-  let lastError: Error;
+  let lastError: Error | undefined;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -38,7 +38,8 @@ export async function fetchWithRetry(url: string, maxRetries: number = 3, delay:
     }
   }
   
-  throw new Error(`Failed to fetch data after ${maxRetries} attempts. Last error: ${lastError.message}`);
+  const errorMessage = lastError ? lastError.message : 'Unknown error';
+  throw new Error(`Failed to fetch data after ${maxRetries} attempts. Last error: ${errorMessage}`);
 }
 
 export async function fetchGuideData() {
