@@ -8,11 +8,9 @@ let rawResponse = '';
 try {
   jsonData = await fetchWithRetry('https://mop-guidebook.s3.ap-southeast-2.amazonaws.com/mop.guidenew.json');
   rawResponse = JSON.stringify(jsonData, null, 2);
-  console.log('Raw response:', rawResponse);
-  console.log('Parsed JSON:', jsonData);
+  // Debug information will be displayed in the HTML below
 } catch (e) {
   error = `データの取得に失敗しました。ネットワーク接続またはS3サーバーの状態を確認してください: ${e instanceof Error ? e.message : '不明なエラー'}`;
-  console.error('Fetch error:', e);
 }
 
 import Layout from '../layouts/Layout.astro';

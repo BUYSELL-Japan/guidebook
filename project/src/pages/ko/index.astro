@@ -15,10 +15,8 @@ let error = '';
 
 try {
   guideItems = await fetchGuideData() as GuideItem[];
-  console.log('Guide items loaded:', guideItems);
 } catch (e) {
   error = `데이터 가져오기 실패. 네트워크 연결을 확인해주세요.: ${e instanceof Error ? e.message : '알 수 없는 오류'}`;
-  console.error('Fetch error:', e);
 }
 
 import Layout from '../../layouts/Layout.astro';

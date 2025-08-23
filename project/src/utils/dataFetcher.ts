@@ -1,10 +1,13 @@
 // Utility for fetching data with retry logic and error handling
 export async function fetchWithRetry(url: string, maxRetries: number = 3, delay: number = 1000): Promise<any> {
-  let lastError: Error;
+  let lastError: Error | null = null;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`Fetching data (attempt ${attempt}/${maxRetries}): ${url}`);
+      // Development only: log fetch attempts
+      if (import.meta.env.DEV) {
+        console.log(`Fetching data (attempt ${attempt}/${maxRetries}): ${url}`);
+      }
       
       const response = await fetch(url, {
         headers: {
@@ -19,12 +22,16 @@ export async function fetchWithRetry(url: string, maxRetries: number = 3, delay:
       }
       
       const data = await response.json();
-      console.log(`Successfully fetched data on attempt ${attempt}`);
+      if (import.meta.env.DEV) {
+        console.log(`Successfully fetched data on attempt ${attempt}`);
+      }
       return data;
       
     } catch (error) {
       lastError = error as Error;
-      console.error(`Fetch attempt ${attempt} failed:`, error);
+      if (import.meta.env.DEV) {
+        console.error(`Fetch attempt ${attempt} failed:`, error);
+      }
       
       // Don't retry on the last attempt
       if (attempt === maxRetries) {
@@ -33,12 +40,14 @@ export async function fetchWithRetry(url: string, maxRetries: number = 3, delay:
       
       // Wait before retrying (exponential backoff)
       const waitTime = delay * Math.pow(2, attempt - 1);
-      console.log(`Waiting ${waitTime}ms before retry...`);
+      if (import.meta.env.DEV) {
+        console.log(`Waiting ${waitTime}ms before retry...`);
+      }
       await new Promise(resolve => setTimeout(resolve, waitTime));
     }
   }
   
-  throw new Error(`Failed to fetch data after ${maxRetries} attempts. Last error: ${lastError.message}`);
+  throw new Error(`Failed to fetch data after ${maxRetries} attempts. Last error: ${lastError?.message || 'Unknown error'}`);
 }
 
 export async function fetchGuideData() {
@@ -58,7 +67,9 @@ export async function fetchGuideData() {
     
     return guideItems;
   } catch (error) {
-    console.error('Failed to fetch guide data:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch guide data:', error);
+    }
     return [];
   }
 }

@@ -15,10 +15,8 @@ let error = '';
 
 try {
   guideItems = await fetchGuideData() as GuideItem[];
-  console.log('Guide items loaded:', guideItems);
 } catch (e) {
   error = `Failed to fetch data. Please check your network connection.: ${e instanceof Error ? e.message : 'Unknown error'}`;
-  console.error('Fetch error:', e);
 }
 
 import Layout from '../../layouts/Layout.astro';
