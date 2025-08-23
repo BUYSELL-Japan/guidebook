@@ -40,7 +40,6 @@ const descriptionParagraphs = (getLocalizedText(guideData, 'description_zh_tw', 
 ---
 
 
-
 <Layout>
   <main class="guide-container">
     <!-- Language Selector -->
