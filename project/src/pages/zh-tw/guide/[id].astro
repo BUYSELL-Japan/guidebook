@@ -1,7 +1,13 @@
 ---
+import { fetchGuideData } from '../../../utils/dataFetcher';
+import { 
+  getLocalizedText, 
+  defaultLanguage
+} from '../../../utils/language';
+import LanguageSelector from '../../../components/LanguageSelector.astro';
+import Layout from '../../../layouts/Layout.astro';
+
 export async function getStaticPaths() {
-  const { fetchGuideData } = await import('../../../utils/dataFetcher');
-  
   try {
     const guideItems = await fetchGuideData();
     
@@ -16,15 +22,13 @@ export async function getStaticPaths() {
   }
 }
 
-import { 
-  getLocalizedText, 
-  defaultLanguage
-} from '../../../utils/language';
-import LanguageSelector from '../../../components/LanguageSelector.astro';
-import Layout from '../../../layouts/Layout.astro';
-
 const currentLanguage = 'zh-tw';
 const { guideData } = Astro.props;
+
+// Add null check for guideData
+if (!guideData) {
+  return Astro.redirect('/zh-tw/');
+}
 
 const homeText = '首頁';
 const overviewText = '概要';
