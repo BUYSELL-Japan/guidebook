@@ -55,7 +55,7 @@ const pageUrl = ogUrl || `https://guide-book.mop-okinawa.com${Astro.url.pathname
 		
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-78VFL11X37"></script>
-		<script>
+		<script is:inline>
 		  window.dataLayer = window.dataLayer || [];
 		  function gtag(){dataLayer.push(arguments);}
 		  gtag('js', new Date());
