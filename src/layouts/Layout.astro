@@ -1,7 +1,27 @@
 ---
 import { getLanguageFromPath } from '../utils/language';
 
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogUrl?: string;
+}
+
+const { title, description, ogImage, ogUrl } = Astro.props;
 const currentLanguage = getLanguageFromPath(Astro.url.pathname);
+
+const defaultTitle = currentLanguage === 'zh-tw' 
+  ? '沖繩旅遊指南 | 發現美麗島嶼的魅力' 
+  : 'Okinawa Guidebook | Discover the Charm of Beautiful Islands';
+
+const defaultDescription = currentLanguage === 'zh-tw'
+  ? '為您介紹沖繩的美麗風景、豐富文化和溫馨體驗。'
+  : 'Introducing the beautiful scenery, rich culture, and heartwarming experiences of Okinawa.';
+
+const pageTitle = title || defaultTitle;
+const pageDescription = description || defaultDescription;
+const pageUrl = ogUrl || Astro.url.href;
 ---
 
 <!doctype html>
@@ -11,8 +31,22 @@ const currentLanguage = getLanguageFromPath(Astro.url.pathname);
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content="沖縄の美しい景色と文化を紹介するガイドブック / 介紹沖繩美麗風景與文化的旅遊指南" />
-		<title>沖縄ガイドブック / 沖繩旅遊指南 | 美ら島の魅力発見 / 發現美麗島嶼的魅力</title>
+		<meta name="description" content={pageDescription} />
+		<title>{pageTitle}</title>
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={pageDescription} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={pageUrl} />
+		<meta property="twitter:title" content={pageTitle} />
+		<meta property="twitter:description" content={pageDescription} />
+		{ogImage && <meta property="twitter:image" content={ogImage} />}
 		
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">

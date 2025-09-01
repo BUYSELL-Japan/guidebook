@@ -22,9 +22,12 @@ try {
 }
 
 import Layout from '../../layouts/Layout.astro';
+
+const pageTitle = t('siteTitle', currentLanguage) + ' | ' + t('siteSubtitle', currentLanguage);
+const pageDescription = t('siteDescription', currentLanguage);
 ---
 
-<Layout>
+<Layout title={pageTitle} description={pageDescription}>
   <main class="top-page">
     <!-- Language Selector -->
     <div class="language-selector-container">

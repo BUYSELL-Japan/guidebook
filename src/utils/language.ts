@@ -66,6 +66,10 @@ export interface GuideItem {
   address_zh_tw: string;
   address_ko: string;
   address_en: string;
+  meta_title_zh_tw: string;
+  meta_title_en: string;
+  meta_description_zh_tw: string;
+  meta_description_en: string;
 }
 
 export function getLocalizedText(item: GuideItem, field: keyof GuideItem, language: Language): string {
