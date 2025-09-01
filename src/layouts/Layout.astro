@@ -21,7 +21,7 @@ const defaultDescription = currentLanguage === 'zh-tw'
 
 const pageTitle = title || defaultTitle;
 const pageDescription = description || defaultDescription;
-const pageUrl = ogUrl || Astro.url.href;
+const pageUrl = ogUrl || `https://guide-book.mop-okinawa.com${Astro.url.pathname}`;
 ---
 
 <!doctype html>
