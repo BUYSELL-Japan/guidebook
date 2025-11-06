@@ -1,0 +1,107 @@
+---
+import { getLanguageFromPath } from '../utils/language';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogUrl?: string;
+  structuredData?: any[];
+  hreflangLinks?: Array<{ rel: string; hreflang?: string; href: string }>;
+}
+
+const { title, description, ogImage, ogUrl, structuredData = [], hreflangLinks = [] } = Astro.props;
+const currentLanguage = getLanguageFromPath(Astro.url.pathname);
+
+const defaultTitle = currentLanguage === 'zh'
+  ? '沖繩旅遊指南 | 發現美麗島嶼的魅力'
+  : 'Okinawa Guidebook | Discover the Charm of Beautiful Islands';
+
+const defaultDescription = currentLanguage === 'zh'
+  ? '為您介紹沖繩的美麗風景、豐富文化和溫馨體驗。'
+  : 'Introducing the beautiful scenery, rich culture, and heartwarming experiences of Okinawa.';
+
+const pageTitle = title || defaultTitle;
+const pageDescription = description || defaultDescription;
+const pageUrl = ogUrl || `https://mop-okinawa.com${Astro.url.pathname}`;
+---
+
+<!doctype html>
+<html lang={currentLanguage}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={pageDescription} />
+		<title>{pageTitle}</title>
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={pageDescription} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={pageUrl} />
+		<meta property="twitter:title" content={pageTitle} />
+		<meta property="twitter:description" content={pageDescription} />
+		{ogImage && <meta property="twitter:image" content={ogImage} />}
+
+		<!-- Hreflang Tags -->
+		{hreflangLinks.map(link => (
+			link.hreflang
+				? <link rel={link.rel} hreflang={link.hreflang} href={link.href} />
+				: <link rel={link.rel} href={link.href} />
+		))}
+
+		<!-- Structured Data -->
+		{structuredData.map((schema) => (
+			<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+		))}
+
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+		
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-78VFL11X37"></script>
+		<script is:inline>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-78VFL11X37');
+		</script>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html {
+		font-family: 'Noto Sans JP', system-ui, sans-serif;
+		line-height: 1.6;
+	}
+	
+	body {
+		margin: 0;
+		padding: 0;
+		min-height: 100vh;
+		background: #f5f5f5;
+		color: #333;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+</style>

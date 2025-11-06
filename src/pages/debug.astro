@@ -1,0 +1,69 @@
+---
+import { fetchWithRetry } from '../utils/dataFetcher';
+
+let jsonData = null;
+let error = '';
+let rawResponse = '';
+
+try {
+  jsonData = await fetchWithRetry('https://s3geojsonnew.s3.ap-southeast-2.amazonaws.com/Geojson3.23.geojson');
+  rawResponse = JSON.stringify(jsonData, null, 2);
+  console.log('Raw response:', rawResponse);
+  console.log('Parsed JSON:', jsonData);
+} catch (e) {
+  error = `データの取得に失敗しました。ネットワーク接続またはS3サーバーの状態を確認してください: ${e instanceof Error ? e.message : '不明なエラー'}`;
+  console.error('Fetch error:', e);
+}
+
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+    <h1>JSONデータデバッグ</h1>
+    
+    {error ? (
+      <div style="background: #ffebee; padding: 1rem; border-radius: 8px; color: #c62828;">
+        <h2>エラー</h2>
+        <p>{error}</p>
+      </div>
+    ) : null}
+
+    {rawResponse ? (
+      <div style="margin: 2rem 0;">
+        <h2>生のレスポンス</h2>
+        <pre style="background: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;">{rawResponse}</pre>
+      </div>
+    ) : null}
+
+    {jsonData ? (
+      <div style="margin: 2rem 0;">
+        <h2>パースされたJSONデータ</h2>
+        <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+          <h3>利用可能なフィールド:</h3>
+          <ul>
+            {Object.keys(jsonData).map(key => (
+              <li><strong>{key}:</strong> {typeof jsonData[key]}</li>
+            ))}
+          </ul>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+          <h3>各フィールドの値:</h3>
+          {Object.entries(jsonData).map(([key, value]) => (
+            <div style="margin: 1rem 0; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+              <h4 style="margin: 0 0 0.5rem 0; color: #1976d2;">{key}</h4>
+              <div style="font-family: monospace; white-space: pre-wrap; word-break: break-all;">
+                {typeof value === 'string' ? value : JSON.stringify(value, null, 2)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : null}
+
+    <div style="margin-top: 2rem;">
+      <a href="/" style="color: #1976d2; text-decoration: none;">← メインページに戻る</a>
+    </div>
+  </main>
+</Layout>
