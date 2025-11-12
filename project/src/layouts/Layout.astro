@@ -13,11 +13,11 @@ interface Props {
 const { title, description, ogImage, ogUrl, structuredData = [], hreflangLinks = [] } = Astro.props;
 const currentLanguage = getLanguageFromPath(Astro.url.pathname);
 
-const defaultTitle = currentLanguage === 'zh'
+const defaultTitle = currentLanguage === 'zh-tw'
   ? '沖繩旅遊指南 | 發現美麗島嶼的魅力'
   : 'Okinawa Guidebook | Discover the Charm of Beautiful Islands';
 
-const defaultDescription = currentLanguage === 'zh'
+const defaultDescription = currentLanguage === 'zh-tw'
   ? '為您介紹沖繩的美麗風景、豐富文化和溫馨體驗。'
   : 'Introducing the beautiful scenery, rich culture, and heartwarming experiences of Okinawa.';
 

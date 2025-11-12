@@ -7,7 +7,7 @@ export default defineConfig({
   site: 'https://mop-okinawa.com',
   output: 'static',
   build: {
-    format: 'file'
+    format: 'directory'
   },
   trailingSlash: 'ignore',
   integrations: [

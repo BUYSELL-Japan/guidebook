@@ -1,4 +1,4 @@
-export type Language = 'ja' | 'zh' | 'ko' | 'en';
+export type Language = 'ja' | 'zh-tw' | 'ko' | 'en';
 
 export interface LanguageConfig {
   code: Language;
@@ -7,31 +7,34 @@ export interface LanguageConfig {
 }
 
 export const languages: LanguageConfig[] = [
-  { code: 'zh', name: '繁體中文', flag: '🇹🇼' },
+  { code: 'zh-tw', name: '繁體中文', flag: '🇹🇼' },
   { code: 'en', name: 'English', flag: '🇺🇸' }
 ];
 
-export const defaultLanguage: Language = 'zh';
+export const defaultLanguage: Language = 'zh-tw';
 
 export function getLanguageFromPath(pathname: string): Language {
-  if (pathname.startsWith('/zh')) {
-    return 'zh';
+  if (pathname.startsWith('/zh-tw') || pathname.startsWith('/zh/')) {
+    return 'zh-tw';
   } else if (pathname.startsWith('/en')) {
     return 'en';
   }
-  return 'zh';
+  return 'zh-tw';
 }
 
 export function getLocalizedPath(path: string, language: Language): string {
   const safePath = path || '/';
-  const cleanPath = safePath.replace(/^\/(zh|en)\/guidebook/, '');
 
-  if (language === 'zh') {
-    return `/zh/guidebook${cleanPath}` || '/zh/guidebook/';
-  } else if (language === 'en') {
-    return `/en/guidebook${cleanPath}` || '/en/guidebook/';
+  // Remove language prefix from current path
+  const cleanPath = safePath.replace(/^\/(zh-tw|zh|en)(\/|$)/, '/');
+
+  // For root path
+  if (cleanPath === '/' || cleanPath === '') {
+    return language === 'zh-tw' ? '/zh-tw' : `/${language}`;
   }
-  return `/${language}/guidebook${cleanPath}`;
+
+  // For other paths
+  return language === 'zh-tw' ? `/zh-tw${cleanPath}` : `/${language}${cleanPath}`;
 }
 
 export interface GuideItem {
@@ -74,7 +77,7 @@ export interface GuideItem {
 }
 
 export function getLocalizedText(item: GuideItem, field: keyof GuideItem, language: Language): string {
-  if (language === 'zh') {
+  if (language === 'zh-tw') {
     if (field === 'name_ja') return item.name_zh_tw || item.name_ja || '';
     if (field === 'catchy_comment_ja') return item.catchy_comment_zh_tw || item.catchy_comment_ja || '';
     if (field === 'summary_ja') return item.summary_zh_tw || item.summary_ja || '';
@@ -131,7 +134,7 @@ export const translations = {
     loadingSpinner: '沖縄の風景を読み込み中...',
     dataLoading: 'データ読み込み中です'
   },
-  'zh': {
+  'zh-tw': {
     siteTitle: '沖繩旅遊指南',
     siteSubtitle: '發現美麗島嶼的魅力',
     siteDescription: '為您介紹沖繩的美麗風景、豐富文化和溫馨體驗。',
