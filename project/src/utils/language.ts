@@ -26,14 +26,17 @@ export function getLocalizedPath(path: string, language: Language): string {
   const safePath = path || '/';
 
   // Remove language prefix from current path
-  const cleanPath = safePath.replace(/^\/(zh-tw|zh|en)(\/|$)/, '/');
+  const cleanPath = safePath.replace(/^\/(zh-tw|zh|en)(\/guidebook)?(\/|$)/, '/');
 
-  // For root path
-  if (cleanPath === '/' || cleanPath === '') {
-    return language === 'zh-tw' ? '/zh-tw' : `/${language}`;
+  // Determine the base path based on whether it's a guidebook path
+  const isGuidebook = safePath.includes('/guidebook');
+
+  if (isGuidebook || cleanPath === '/' || cleanPath === '') {
+    // For guidebook paths, always use /guidebook
+    return language === 'zh-tw' ? '/zh/guidebook/' : `/${language}/guidebook/`;
   }
 
-  // For other paths
+  // For other paths (legacy)
   return language === 'zh-tw' ? `/zh-tw${cleanPath}` : `/${language}${cleanPath}`;
 }
 

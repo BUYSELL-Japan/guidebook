@@ -50,6 +50,10 @@ const pageUrl = ogUrl || `https://mop-okinawa.com${Astro.url.pathname}`;
 		<meta property="twitter:description" content={pageDescription} />
 		{ogImage && <meta property="twitter:image" content={ogImage} />}
 
+		<!-- Prevent app store redirect -->
+		<meta name="apple-itunes-app" content="app-id=, app-argument=">
+		<meta name="google-play-app" content="">
+
 		<!-- Hreflang Tags -->
 		{hreflangLinks.map(link => (
 			link.hreflang
